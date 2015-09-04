@@ -8,7 +8,7 @@ using UnityEditor;
 using UnityEngine;
 
 namespace Entitas.Unity.VisualDebugging {
-    [CustomEditor(typeof(EntityBehaviour)), CanEditMultipleObjects]
+    [CustomEditor(typeof(EntityBehaviour), true), CanEditMultipleObjects]
     public class EntityEditor : Editor {
         GUIStyle _foldoutStyle;
         static IDefaultInstanceCreator[] _defaultInstanceCreators;

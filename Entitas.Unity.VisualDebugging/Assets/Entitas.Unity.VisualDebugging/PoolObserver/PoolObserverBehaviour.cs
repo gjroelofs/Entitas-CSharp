@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 
-namespace Entitas.Unity.VisualDebugging {
+namespace Entitas.Unity.VisualDebugging
+{
+    [ExecuteInEditMode]
     public class PoolObserverBehaviour : MonoBehaviour {
         public PoolObserver poolObserver { get { return _poolObserver; } }
 
