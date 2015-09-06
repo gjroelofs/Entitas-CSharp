@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Entitas.Unity.VisualDebugging
 {
@@ -13,7 +13,7 @@ namespace Entitas.Unity.VisualDebugging
         }
 
         void Update() {
-            if (_poolObserver.entitiesContainer != null) {
+            if (_poolObserver != null && _poolObserver.entitiesContainer != null) {
                 _poolObserver.entitiesContainer.name = _poolObserver.ToString();
             }
         }

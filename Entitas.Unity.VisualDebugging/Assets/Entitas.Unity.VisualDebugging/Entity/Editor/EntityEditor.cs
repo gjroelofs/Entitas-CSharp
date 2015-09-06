@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -45,6 +45,13 @@ namespace Entitas.Unity.VisualDebugging {
             var pool = entityBehaviour.pool;
             var entity = entityBehaviour.entity;
 
+            if (entity == null) {
+                if (GUILayout.Button("Create Entity")) {
+                    entityBehaviour.CreateEntity();
+                }
+                return;
+            }
+
             if (GUILayout.Button("Destroy Entity")) {
                 entityBehaviour.DestroyBehaviour();
                 pool.DestroyEntity(entity);
@@ -89,7 +96,7 @@ namespace Entitas.Unity.VisualDebugging {
                 var entity = entityBehaviour.entity;
 
                 EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.LabelField(entity.ToString());
+                EditorGUILayout.LabelField(entity == null ? "Deleted" : entity.ToString());
                 if (GUILayout.Button("Destroy Entity")) {
                     entityBehaviour.DestroyBehaviour();
                     pool.DestroyEntity(entity);
@@ -245,7 +252,7 @@ namespace Entitas.Unity.VisualDebugging {
         static void generateITypeDrawer(string typeName) {
             var config = new VisualDebuggingConfig(EntitasPreferencesEditor.LoadConfig());
             var folder = config.typeDrawerFolderPath;
-            var filePath = folder + "Type_TypeDrawer.cs";
+            var filePath = folder + "GuidTypeDrawer.cs";
             var template = string.Format(typeDrawerTemplateFormat, typeName);
             generateTemplate(folder, filePath, template);
         }
@@ -280,7 +287,7 @@ public class Default_type_InstanceCreator : IDefaultInstanceCreator {{
 using Entitas;
 using Entitas.Unity.VisualDebugging;
 
-public class Type_TypeDrawer : ITypeDrawer {{
+public class GuidTypeDrawer : ITypeDrawer {{
     public bool HandlesType(Type type) {{
         return type == typeof({0});
     }}

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+using System;
+using UnityEngine;
 using Entitas;
 
 namespace Entitas.Unity.VisualDebugging {
@@ -36,15 +37,28 @@ namespace Entitas.Unity.VisualDebugging {
 
         public void DestroyBehaviour() {
             _entity.OnEntityReleased -= onEntityReleased;
-            Destroy(gameObject);
+
+            if (gameObject != null) {
+                // We might be destroyed due to Assembly Reload. 
+                // GameObject isn't null, but Unity overrides the == for the null operator to check for destruction.
+                if (Application.isEditor)
+                    DestroyImmediate(gameObject);
+                else
+                    Destroy(gameObject);
+            }
+
         }
 
-        void onEntityReleased(Entity e) {
+        public virtual void CreateEntity() {
+            
+        }
+
+        public virtual void onEntityReleased(Entity e) {
             DestroyBehaviour();
         }
 
         void Update() {
-            name = _entity.ToString();
+            name = _entity == null ? "Deleted" : _entity.ToString();
         }
     }
 }
