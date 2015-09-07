@@ -1,4 +1,4 @@
-﻿using Entitas;
+using Entitas;
 using UnityEditor;
 using UnityEngine;
 using System.Linq;
@@ -9,6 +9,10 @@ namespace Entitas.Unity.VisualDebugging {
 
         public override void OnInspectorGUI() {
             var poolObserver = ((PoolObserverBehaviour)target).poolObserver;
+
+            if (GUILayout.Button("Destroy All Entities")){
+                poolObserver.pool.DestroyAllEntities();
+            }
 
             EditorGUILayout.BeginVertical(GUI.skin.box);
             EditorGUILayout.LabelField(poolObserver.name, EditorStyles.boldLabel);
