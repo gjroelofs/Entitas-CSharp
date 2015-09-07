@@ -57,43 +57,42 @@ namespace Entitas {
         }
 
         public void Execute() {
-            if (_observer.collectedEntities.Count != 0) {
-                if (_ensureComponents != null) {
-                    if (_excludeComponents != null) {
-                        foreach (var e in _observer.collectedEntities) {
-                            if (_ensureComponents.Matches(e) && !_excludeComponents.Matches(e)) {
-                                _buffer.Add(e.Retain());
-                            }
-                        }
-                    } else {
-                        foreach (var e in _observer.collectedEntities) {
-                            if (_ensureComponents.Matches(e)) {
-                                _buffer.Add(e.Retain());
-                            }
-                        }
-                    }
-                } else if (_excludeComponents != null) {
+            if (_observer.collectedEntities.Count == 0) return;
+            if (_ensureComponents != null) {
+                if (_excludeComponents != null) {
                     foreach (var e in _observer.collectedEntities) {
-                        if (!_excludeComponents.Matches(e)) {
+                        if (_ensureComponents.Matches(e) && !_excludeComponents.Matches(e)) {
                             _buffer.Add(e.Retain());
                         }
                     }
                 } else {
                     foreach (var e in _observer.collectedEntities) {
+                        if (_ensureComponents.Matches(e)) {
+                            _buffer.Add(e.Retain());
+                        }
+                    }
+                }
+            } else if (_excludeComponents != null) {
+                foreach (var e in _observer.collectedEntities) {
+                    if (!_excludeComponents.Matches(e)) {
                         _buffer.Add(e.Retain());
                     }
                 }
+            } else {
+                foreach (var e in _observer.collectedEntities) {
+                    _buffer.Add(e.Retain());
+                }
+            }
 
-                _observer.ClearCollectedEntities();
-                if (_buffer.Count != 0) {
-                    _subsystem.Execute(_buffer);
-                    for (int i = 0, bufferCount = _buffer.Count; i < bufferCount; i++) {
-                        _buffer[i].Release();
-                    }
-                    _buffer.Clear();
-                    if (_clearAfterExecute) {
-                        _observer.ClearCollectedEntities();
-                    }
+            _observer.ClearCollectedEntities();
+            if (_buffer.Count != 0) {
+                _subsystem.Execute(_buffer);
+                for (int i = 0, bufferCount = _buffer.Count; i < bufferCount; i++) {
+                    _buffer[i].Release();
+                }
+                _buffer.Clear();
+                if (_clearAfterExecute) {
+                    _observer.ClearCollectedEntities();
                 }
             }
         }

@@ -6,6 +6,9 @@ namespace Entitas.Unity.VisualDebugging {
 
     [ExecuteInEditMode]
     public class EntityBehaviour : MonoBehaviour {
+
+        public bool overrideName = true;
+
         public Pool pool { get { return _pool; } }
         public Entity entity { get { return _entity; } }
         public bool[] unfoldedComponents { get { return _unfoldedComponents; } }
@@ -38,15 +41,17 @@ namespace Entitas.Unity.VisualDebugging {
         public void DestroyBehaviour() {
             _entity.OnEntityReleased -= onEntityReleased;
 
-            if (gameObject != null) {
+            // Fucking bullshit right here. == on gameobject doesn't work, even against null.
+            try {
+                if (null == gameObject) return;
+
                 // We might be destroyed due to Assembly Reload. 
                 // GameObject isn't null, but Unity overrides the == for the null operator to check for destruction.
                 if (Application.isEditor)
                     DestroyImmediate(gameObject);
                 else
                     Destroy(gameObject);
-            }
-
+            } catch {}
         }
 
         public virtual void CreateEntity() {
@@ -58,7 +63,8 @@ namespace Entitas.Unity.VisualDebugging {
         }
 
         void Update() {
-            name = _entity == null ? "Deleted" : _entity.ToString();
+            if(overrideName)
+                name = _entity == null ? "Deleted" : _entity.ToString();
         }
     }
 }
